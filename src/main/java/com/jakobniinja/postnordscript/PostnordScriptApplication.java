@@ -1,21 +1,20 @@
 package com.jakobniinja.postnordscript;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.openqa.selenium.Keys;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-@Configuration
 @SpringBootApplication
 public class PostnordScriptApplication {
-    public static void main(String[] args) throws InterruptedException {
-        final int postkod = 12456;
-        CharSequence charSequence = new StringBuffer("12456");
+    public static void main(String[] args) throws InterruptedException, IOException {
+        CharSequence charSequence = new StringBuffer("14730");
         final String seleniumUrl = "https://www.postnord.se/vara-verktyg/sok-utdelningsdag";
 //        <------- Config --------->
 
@@ -37,8 +36,25 @@ public class PostnordScriptApplication {
         driver.findElement(By.xpath("//*[@id=\"block-DeliveryDaySearchBlockProxy-41857\"]/div/pn-zipcode-search/pn-search-field/div/input")).sendKeys(charSequence);
         driver.findElement(By.xpath("//*[@id=\"block-DeliveryDaySearchBlockProxy-41857\"]/div/pn-zipcode-search/pn-search-field/div/input")).sendKeys(Keys.ENTER);
 
-        System.out.println("postkod is: " + postkod);
-        Thread.sleep(600000);
+        System.out.println("postkod is: " + charSequence);
+
+
+//        <------- Snapshot --------->
+
+        Date currentDate = new Date();
+        String newDate = currentDate.toString().replace(" ", "-").replace(":", "-");
+
+        System.out.println("date is: " + newDate);
+
+
+        Thread.sleep(600);
+        File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshotFile, new File(".//screenshoot/" + newDate + ".png"));
+
+
+//        <------- Snapshot --------->
+
+        Thread.sleep(600);
         driver.quit();
     }
 }
